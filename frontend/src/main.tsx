@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 
 import LoginPage from './pages/login/LoginPage.tsx';
 import RegisterPage from "./pages/login/RegisterPage.tsx";
-import ClientDashboardPage from "./pages/ClientDashboardPage.tsx";
+import ClientDashboardPage from "./pages/dashboard/ClientDashboardPage.tsx";
 
 
 createRoot(document.getElementById('root')!).render(

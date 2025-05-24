@@ -11,5 +11,5 @@ import java.util.Map;
 public class StockDataDTO {
     private String symbol;
 
-    private Map<LocalDateTime, StockCandleDTO> hourlyPrices;
+    private Map<LocalDateTime, StockCandleDTO> prices;
 }

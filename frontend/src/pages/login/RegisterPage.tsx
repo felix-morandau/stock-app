@@ -1,19 +1,8 @@
 import {type FormEvent, useState} from 'react';
-import {useNavigate, useParams} from 'react-router-dom';
+import {useNavigate, useSearchParams} from 'react-router-dom';
 import axios from 'axios';
 import { API_BASE_URL } from '../../constants/api.ts';
-
-
-const COUNTRIES = [
-    'USA',
-    'CANADA',
-    'UK',
-    'GERMANY',
-    'FRANCE',
-    'ROMANIA',
-    'SPAIN',
-] as const;
-type Country = (typeof COUNTRIES)[number];
+import {COUNTRIES, type Country} from "../../models/countries.ts";
 
 interface CreateUserDto {
     firstName: string;
@@ -41,8 +30,9 @@ export default function RegisterPage() {
 
     const navigate = useNavigate();
 
-    const { role: roleParam } = useParams<{ role?: Role }>();
-    const type: Role = roleParam ?? 'CLIENT';
+    const [searchParams] = useSearchParams()
+    const roleParam = searchParams.get('role') as Role | null
+    const type: Role = roleParam === 'ADMIN' ? 'ADMIN' : 'CLIENT'
 
     async function handleSubmit(e: FormEvent) {
         e.preventDefault();

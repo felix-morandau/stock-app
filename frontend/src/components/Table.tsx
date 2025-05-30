@@ -30,7 +30,7 @@ function GenericTable<T>({
                     <DataTable
                         title={title}
                         columns={columns}
-                        data={data}
+                        data={Array.isArray(data) ? data : []}
                         pagination
                         highlightOnHover
                         selectableRows

@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -34,11 +35,11 @@ public class User {
     @Column(name = "country", nullable = false)
     private Country country;
 
-    @OneToOne(
+    @OneToMany(
             cascade = CascadeType.ALL
     )
     @JoinColumn(name = "portfolio_id")
-    private Portfolio portfolio;
+    private List<Portfolio> portfolios;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

@@ -19,12 +19,18 @@ export function useMonthlyData(symbol: StockSymbol) {
 
     useEffect(() => {
         if (!symbol) return
+        const userId = sessionStorage.getItem('userId')
+        if (!userId) {
+            setError(new Error('No userId in session'))
+            return
+        }
+
         setLoading(true)
         setError(null)
 
         axios
             .get<{ symbol: string; prices: Record<string, StockCandle> }>(
-                `${API_BASE}/${symbol}/monthly`,
+                `${API_BASE}/${symbol}/monthly/${userId}`,
                 getAuthHeaders()
             )
             .then(res => {
@@ -49,13 +55,19 @@ export function useDailyData(symbol: StockSymbol, date: string | null) {
 
     useEffect(() => {
         if (!symbol) return
+        const userId = sessionStorage.getItem('userId')
+        if (!userId) {
+            setError(new Error('No userId in session'))
+            return
+        }
+
+        const query = date ? `?date=${date}` : ''
         setLoading(true)
         setError(null)
 
-        const query = date ? `?date=${date}` : ''
         axios
             .get<{ symbol: string; prices: Record<string, StockCandle> }>(
-                `${API_BASE}/${symbol}/daily${query}`,
+                `${API_BASE}/${symbol}/daily/${userId}${query}`,
                 getAuthHeaders()
             )
             .then(res => {
@@ -80,11 +92,20 @@ export function useCurrentPrice(symbol: StockSymbol) {
 
     useEffect(() => {
         if (!symbol) return
+        const userId = sessionStorage.getItem('userId')
+        if (!userId) {
+            setError(new Error('No userId in session'))
+            return
+        }
+
         setLoading(true)
         setError(null)
 
         axios
-            .get<number>(`${API_BASE}/${symbol}/current`, getAuthHeaders())
+            .get<number>(
+                `${API_BASE}/${symbol}/current/${userId}`,
+                getAuthHeaders()
+            )
             .then(res => setPrice(res.data))
             .catch(err => setError(err))
             .finally(() => setLoading(false))

@@ -1,7 +1,6 @@
 package com.felix_morandau.stock_app.entity.transactional;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,18 +18,27 @@ public class Portfolio {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @Column(name = "amount", nullable = false)
-    private float amount = 0.0f;
+    private float amount;
+
+    @Column(name = "total_invested", nullable = false)
+    private double totalInvested;
 
     @OneToMany
     @JoinColumn(name = "portfolio_id")
     private List<Transaction> transactionList;
 
-    @Column(name = "profit", nullable = false)
-    private float profit = 0.0f;
+    @Column(name = "realized_pnl", nullable = false)
+    private double realizedPnl;
+
+    @Column(name = "unrealized_pnl", nullable = false)
+    private double unrealizedPnl;
+
+    @Column(name = "return_percentage", nullable = false)
+    private double returnPercentage;
 
     @OneToMany
     @JoinColumn(name = "portfolio_id")

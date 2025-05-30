@@ -8,6 +8,7 @@ import com.felix_morandau.stock_app.entity.transactional.Portfolio;
 import com.felix_morandau.stock_app.entity.transactional.User;
 import com.felix_morandau.stock_app.entity.enums.UserType;
 import com.felix_morandau.stock_app.entity.transactional.UserPreferredSettings;
+import com.felix_morandau.stock_app.repository.SettingsRepository;
 import com.felix_morandau.stock_app.repository.UserRepository;
 import com.felix_morandau.stock_app.util.JwtUtil;
 import com.felix_morandau.stock_app.util.PasswordUtil;
@@ -26,6 +27,7 @@ import java.util.UUID;
 public class UserService {
     private final PortfolioService portfolioService;
     private final UserRepository userRepository;
+    private final SettingsRepository settingsRepository;
     private final PasswordUtil passwordUtil;
     private final JwtUtil jwtUtil;
 
@@ -51,13 +53,15 @@ public class UserService {
         newUser.setType(dto.getType());
         newUser.setCountry(dto.getCountry());
         newUser.setBio(dto.getBio());
-        newUser.setUserPreferredSettings(new UserPreferredSettings());
+
+        UserPreferredSettings settings = new UserPreferredSettings();
+        newUser.setUserPreferredSettings(settingsRepository.save(settings));
 
         User savedUser = userRepository.save(newUser);
 
         Portfolio portfolio = portfolioService.addDefaultPortfolio(savedUser.getId());
 
-        savedUser.setPortfolio(portfolio);
+        savedUser.getPortfolios().add(portfolio);
         return userRepository.save(savedUser);
     }
 
@@ -123,15 +127,15 @@ public class UserService {
         Optional<User> user = userRepository.findUserByEmail(request.email());
 
         if (user.isEmpty()) {
-            return new LoginResponse(false, null, "User with email " + request.email() + " not found", null);
+            return new LoginResponse(false, null, null, "User with email " + request.email() + " not found", null);
         }
 
         String token =jwtUtil.generateToken(user.get());
 
         if (passwordUtil.checkPassword(request.password(), user.get().getPassword())) {
-            return new LoginResponse(true, user.get().getType(), null, token);
+            return new LoginResponse(true, user.get().getId(), user.get().getType(), null, token);
         } else {
-            return new LoginResponse(false, null, "Incorrect password", null);
+            return new LoginResponse(false, null, null, "Incorrect password", null);
         }
     }
 }

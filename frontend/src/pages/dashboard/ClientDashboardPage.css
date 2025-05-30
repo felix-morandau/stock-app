@@ -1,105 +1,130 @@
 /* src/pages/ClientDashboardPage.css */
 
-.dashboard-container {
+/* Page-level flex so navbar sits on top */
+.page-container {
     display: flex;
+    flex-direction: column;
     height: 100vh;
-    font-family: Arial, sans-serif;
-    color: #333;
 }
 
-/* Sidebar */
-.sidebar {
-    width: 200px;
-    background-color: #f5f5f5;
-    padding: 20px;
-    box-sizing: border-box;
-    border-right: 1px solid #ddd;
+/* ─── Nav Bar ───────────────────────────────────────────── */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
 }
-
-.sidebar ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.sidebar li {
-    padding: 10px;
-    margin-bottom: 8px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-}
-
-.sidebar li:hover {
-    background-color: #e0e0e0;
-}
-
-.sidebar li.active {
-    background-color: #d0d0d0;
+.logo span {
+    font-size: 1.25rem;
     font-weight: bold;
 }
+.search-bar input {
+    width: 200px;
+    padding: 0.4rem 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.nav-actions .nav-btn {
+    background: none;
+    border: none;
+    margin-left: 1rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #333;
+}
+.nav-actions .nav-btn:hover {
+    color: #000;
+}
 
-/* Main Content Area */
+/* ─── Dashboard Layout ─────────────────────────────────── */
+.dashboard-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ─── Sidebar / Main are unchanged ──────────────────────── */
+.sidebar {
+    width: 200px;
+    background: #f5f5f5;
+    padding: 1rem;
+}
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+.sidebar li {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+}
+.sidebar li.active,
+.sidebar li:hover {
+    background: #ddd;
+}
 .main-content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-/* Header */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.header h2 {
-    margin: 0;
-    font-size: 1.5em;
-}
-
-.price {
-    font-size: 1.25em;
-    font-weight: bold;
-}
-
-/* Controls */
-.controls {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 20px;
-}
-
-.controls label {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.controls input[type="date"] {
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-/* Graph Section */
-.graph-area {
-    flex: 1;
+    padding: 1rem;
     overflow-y: auto;
 }
 
-@media (max-width: 768px) {
-    .dashboard-container {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #ddd;
-    }
+/* Header container: two columns */
+.header {
+    display: flex;
+    align-items: center;      /* vertical centering */
+    margin-bottom: 1rem;
 }
+
+/* Left column: title takes all remaining space */
+.header .header-title {
+    flex: 1;                  /* grow */
+}
+
+/* Remove default h2 margins if needed */
+.header .header-title h2 {
+    margin: 0;
+}
+
+/* Right column: fix width, center contents */
+.header .price {
+    flex: 0 0 150px;          /* or whatever width you like */
+    display: flex;
+    justify-content: center;  /* horizontal centering */
+    align-items: center;      /* vertical centering */
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Button container: side-by-side with a little gap */
+.button-container {
+    display: flex;
+    gap: 2rem;           /* space between buttons */
+    margin-top: 5rem;   /* space above from the graph */
+    justify-content: center; /* change to center or flex-end to reposition */
+}
+
+/* Compact button styling */
+button.dashboard-button {
+    padding: 6px 12px;      /* smaller vertical & horizontal padding */
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.85rem;     /* slightly smaller text */
+    cursor: pointer;
+    transition: background 0.2s ease;
+    flex: 0 0 auto;         /* size to content, don’t stretch */
+    min-width: 100px;        /* ensure a decent tap area */
+}
+button.dashboard-button:hover:not(:disabled) {
+    background: #0056b3;
+}
+button.dashboard-button:disabled {
+    opacity: 0.65;
+    cursor: default;
+}
+

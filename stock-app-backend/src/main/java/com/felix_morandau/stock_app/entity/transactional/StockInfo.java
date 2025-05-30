@@ -2,12 +2,16 @@ package com.felix_morandau.stock_app.entity.transactional;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "stats")
 @Data
+@RequiredArgsConstructor
+@NoArgsConstructor
 public class StockInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,10 +25,4 @@ public class StockInfo {
 
     @Column(name = "avg_cost", nullable = false)
     private float avgCost;
-
-    @Column(name = "unrealized_gain", nullable = false)
-    private float unrealizedGain;
-
-    @Column(name = "realized_gain", nullable = false)
-    private float realizedGain;
 }

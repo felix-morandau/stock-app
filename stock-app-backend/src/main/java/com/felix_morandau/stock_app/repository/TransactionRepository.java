@@ -11,14 +11,24 @@ import java.util.UUID;
 public interface TransactionRepository extends JpaRepository<Transaction, UUID> {
 
     @Query("""
-        SELECT t
-        FROM Transaction t
-        JOIN Portfolio p
-        WHERE (:portfolioId  IS NULL OR p.id = :portfolioId)
-          AND (:stockName IS NULL OR t.stockName = :stockName)
-        """)
+SELECT t
+FROM Portfolio p
+JOIN p.transactionList t
+WHERE p.id = :portfolioId
+""")
+    List<Transaction> findAllByPortfolioId(@Param("portfolioId") UUID portfolioId);
+
+    @Query("""
+  SELECT t
+  FROM Portfolio p
+  JOIN p.transactionList t
+  WHERE (:portfolioId IS NULL OR p.id = :portfolioId)
+    AND (:stockName   IS NULL OR t.stockName = :stockName)
+ """)
     List<Transaction> findByPortfolioAndStock(
-            @Param("userId")    UUID userId,
-            @Param("stockName") String stockName
+            @Param("portfolioId") UUID portfolioId,
+            @Param("stockName")   String stockName
     );
+
+
 }

@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,7 +40,7 @@ public class User {
             cascade = CascadeType.ALL
     )
     @JoinColumn(name = "portfolio_id")
-    private List<Portfolio> portfolios;
+    private List<Portfolio> portfolios = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -50,6 +51,9 @@ public class User {
 
     @Column(name = "bio")
     private String bio;
+
+    @Column(name = "balance")
+    private double balance;
 
     @OneToOne(
             cascade = CascadeType.ALL,

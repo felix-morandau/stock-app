@@ -6,6 +6,8 @@ import com.felix_morandau.stock_app.entity.transactional.Transaction;
 import com.felix_morandau.stock_app.repository.TransactionRepository;
 import com.felix_morandau.stock_app.service.PortfolioService;
 import com.felix_morandau.stock_app.strategy.TransactionHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
@@ -18,6 +20,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class TransactionRegisteredListener {
+
+    private static final Logger logger = LoggerFactory.getLogger(TransactionRegisteredListener.class);
 
     private final TransactionRepository txRepo;
     private final PortfolioService portfolioService;
@@ -45,20 +49,26 @@ public class TransactionRegisteredListener {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onTransactionRegistered(TransactionRegisteredEvent event) {
         UUID txId = event.getTransactionId();
+        UUID portfolioId = event.getPortfolioId();
 
-        Transaction tx = txRepo.findById(txId)
-                .orElseThrow(() ->
-                        new IllegalStateException("Transaction not found: " + txId)
+        try {
+            Transaction tx = txRepo.findById(txId)
+                    .orElseThrow(() ->
+                            new IllegalStateException("Transaction not found: " + txId)
+                    );
+
+            TransactionType type = tx.getTransactionType();
+            TransactionHandler handler = handlers.get(type);
+            if (handler == null) {
+                throw new IllegalStateException(
+                        "No handler registered for transaction type: " + type
                 );
+            }
 
-        TransactionType type = tx.getTransactionType();
-        TransactionHandler handler = handlers.get(type);
-        if (handler == null) {
-            throw new IllegalStateException(
-                    "No handler registered for transaction type: " + type
-            );
+            handler.apply(tx, portfolioService, portfolioId);
+        } catch (Exception e) {
+            logger.error("Failed to process transaction event for transactionId: {} and portfolioId: {}",
+                    txId, portfolioId, e);
         }
-
-        handler.apply(tx, portfolioService);
     }
 }

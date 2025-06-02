@@ -30,14 +30,14 @@ public class Transaction {
     private String stockName;
 
     @Column(name = "share_price")
-    private Float sharePrice;
+    private double sharePrice;
 
     @Column(name = "nr_of_shares")
     private Integer nrOfShares;
 
     //deposit/withdraw operations
     @Column(name = "cash_amount")
-    private Float cashAmount;
+    private double cashAmount;
 
 }
 

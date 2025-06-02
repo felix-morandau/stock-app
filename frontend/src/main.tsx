@@ -7,6 +7,7 @@ import RegisterPage from "./pages/login/RegisterPage.tsx";
 import ClientDashboardPage from "./pages/dashboard/ClientDashboardPage.tsx";
 import AdminDashboardPage from "./pages/dashboard/AdminDashboardPage.tsx";
 import SettingsPage from "./pages/settings/SettingsPage.tsx";
+import PortfolioStatsPage from "./pages/PortfolioPage.tsx";
 
 
 createRoot(document.getElementById('root')!).render(
@@ -19,6 +20,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/client-dashboard" element={<ClientDashboardPage />} />
             <Route path="/admin-dashboard" element={<AdminDashboardPage />} />
             <Route path="/client-settings" element={<SettingsPage />} />
+            <Route path="/portfolio-stats/:portfolioId" element={<PortfolioStatsPage />} />
         </Routes>
     </Router>
 

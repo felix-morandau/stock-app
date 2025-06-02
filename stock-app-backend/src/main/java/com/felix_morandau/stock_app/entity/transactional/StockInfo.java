@@ -11,7 +11,6 @@ import java.util.UUID;
 @Table(name = "stats")
 @Data
 @RequiredArgsConstructor
-@NoArgsConstructor
 public class StockInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,5 +23,5 @@ public class StockInfo {
     private int nrOfShares;
 
     @Column(name = "avg_cost", nullable = false)
-    private float avgCost;
+    private double avgCost;
 }

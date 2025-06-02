@@ -4,10 +4,9 @@ import com.felix_morandau.stock_app.entity.enums.TransactionType;
 import com.felix_morandau.stock_app.entity.transactional.Transaction;
 import com.felix_morandau.stock_app.service.PortfolioService;
 
-public interface TransactionHandler {
-    /** Which transaction type this handler processes */
-    TransactionType getType();
+import java.util.UUID;
 
-    /** Apply the transaction to update portfolio stats */
-    void apply(Transaction tx, PortfolioService portfolioService);
+public interface TransactionHandler {
+    TransactionType getType();
+    void apply(Transaction tx, PortfolioService portfolioService, UUID portfolioId);
 }

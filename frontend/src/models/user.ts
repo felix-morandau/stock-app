@@ -9,5 +9,6 @@ export default interface User{
     country: Country,
     bio: string,
     type: 'ADMIN' | 'CLIENT',
-    createdAt: string
+    createdAt: string,
+    balance: number
 }

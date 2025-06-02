@@ -1,5 +1,7 @@
 package com.felix_morandau.stock_app.controller;
 
+import com.felix_morandau.stock_app.dto.stats.PortfolioStatsDTO;
+import com.felix_morandau.stock_app.dto.stats.StockHoldingDTO;
 import com.felix_morandau.stock_app.entity.transactional.Portfolio;
 import com.felix_morandau.stock_app.service.PortfolioService;
 import lombok.AllArgsConstructor;
@@ -37,6 +39,33 @@ public class PortfolioController {
                 .findFirst()
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{portfolioId}/stats")
+    public ResponseEntity<PortfolioStatsDTO> getPortfolioStats(@PathVariable UUID portfolioId) {
+        PortfolioStatsDTO stats = portfolioService.getPortfolioStats(portfolioId);
+        return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/{portfolioId}/{stockName}")
+    public ResponseEntity<StockHoldingDTO> getStockStats(
+            @PathVariable UUID portfolioId,
+            @PathVariable String stockName
+    ) {
+        try {
+            // Fetch the portfolio to ensure it exists
+            portfolioService.getPortfolioStats(portfolioId); // This will throw PortfolioNotFoundException if not found
+
+            // Find the StockInfo for the given stockName in the portfolio
+            StockHoldingDTO stats = portfolioService.getStockHoldingsByPortfolioAndStock(portfolioId, stockName);
+            return ResponseEntity.ok(stats);
+        } catch (IllegalArgumentException e) {
+            // Handle invalid stock symbol
+            return ResponseEntity.badRequest().body(null);
+        } catch (Exception e) {
+            // Handle other errors (e.g., PortfolioNotFoundException)
+            return ResponseEntity.internalServerError().body(null);
+        }
     }
 
     @PostMapping("/{userId}")

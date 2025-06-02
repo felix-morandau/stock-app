@@ -1,17 +1,20 @@
 package com.felix_morandau.stock_app.entity.event;
 
 import lombok.Getter;
-import org.springframework.context.ApplicationEvent;
+import lombok.Setter;
 
 import java.util.UUID;
 
 @Getter
-public class TransactionRegisteredEvent extends ApplicationEvent {
+@Setter
+public class TransactionRegisteredEvent {
+    private final Object source;
     private final UUID transactionId;
+    private final UUID portfolioId;
 
-    public TransactionRegisteredEvent(Object source, UUID transactionId) {
-        super(source);
+    public TransactionRegisteredEvent(Object source, UUID transactionId, UUID portfolioId) {
+        this.source = source;
         this.transactionId = transactionId;
+        this.portfolioId = portfolioId;
     }
-
 }

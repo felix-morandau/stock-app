@@ -21,18 +21,15 @@ public class Portfolio {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @Column(name = "amount", nullable = false)
-    private float amount;
+    @Column(name = "profit", nullable = false)
+    private double profit;
 
     @Column(name = "total_invested", nullable = false)
     private double totalInvested;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "portfolio_id")
     private List<Transaction> transactionList;
-
-    @Column(name = "realized_pnl", nullable = false)
-    private double realizedPnl;
 
     @Column(name = "unrealized_pnl", nullable = false)
     private double unrealizedPnl;
@@ -40,7 +37,7 @@ public class Portfolio {
     @Column(name = "return_percentage", nullable = false)
     private double returnPercentage;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "portfolio_id")
     private List<StockInfo> stats;
 

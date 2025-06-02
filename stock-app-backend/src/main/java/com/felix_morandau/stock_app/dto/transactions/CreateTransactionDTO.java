@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 @AllArgsConstructor
 public class CreateTransactionDTO {
@@ -18,7 +20,7 @@ public class CreateTransactionDTO {
     private String stockName;
 
     @NotNull
-    private float sharePrice;
+    private double sharePrice;
 
     @NotNull
     private int nrOfShares;

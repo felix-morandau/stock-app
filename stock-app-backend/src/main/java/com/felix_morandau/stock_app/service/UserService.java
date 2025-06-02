@@ -1,5 +1,6 @@
 package com.felix_morandau.stock_app.service;
 
+import com.felix_morandau.stock_app.config.UserNotFoundException;
 import com.felix_morandau.stock_app.dto.user.CreateUserDTO;
 import com.felix_morandau.stock_app.dto.login.LoginRequest;
 import com.felix_morandau.stock_app.dto.login.LoginResponse;
@@ -8,6 +9,7 @@ import com.felix_morandau.stock_app.entity.transactional.Portfolio;
 import com.felix_morandau.stock_app.entity.transactional.User;
 import com.felix_morandau.stock_app.entity.enums.UserType;
 import com.felix_morandau.stock_app.entity.transactional.UserPreferredSettings;
+import com.felix_morandau.stock_app.repository.PortfolioRepository;
 import com.felix_morandau.stock_app.repository.SettingsRepository;
 import com.felix_morandau.stock_app.repository.UserRepository;
 import com.felix_morandau.stock_app.util.JwtUtil;
@@ -25,7 +27,7 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 public class UserService {
-    private final PortfolioService portfolioService;
+    private final PortfolioRepository portfolioRepository;
     private final UserRepository userRepository;
     private final SettingsRepository settingsRepository;
     private final PasswordUtil passwordUtil;
@@ -38,6 +40,12 @@ public class UserService {
         }
 
         return userRepository.findUsersByType(userType);
+    }
+
+    public User getUser(UUID userId) {
+
+        return userRepository.findUserById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
     }
 
     @Transactional
@@ -53,13 +61,20 @@ public class UserService {
         newUser.setType(dto.getType());
         newUser.setCountry(dto.getCountry());
         newUser.setBio(dto.getBio());
+        newUser.setBalance(1000000000);
 
         UserPreferredSettings settings = new UserPreferredSettings();
         newUser.setUserPreferredSettings(settingsRepository.save(settings));
 
         User savedUser = userRepository.save(newUser);
 
-        Portfolio portfolio = portfolioService.addDefaultPortfolio(savedUser.getId());
+        Portfolio portfolio = new Portfolio();
+        portfolio.setProfit(0.0);
+        portfolio.setTotalInvested(0.0);
+        portfolio.setUnrealizedPnl(0.0);
+        portfolio.setReturnPercentage(0.0);
+        portfolio.setDefaultName(savedUser.getFirstName() + " " + savedUser.getLastName());
+        portfolio = portfolioRepository.save(portfolio);
 
         savedUser.getPortfolios().add(portfolio);
         return userRepository.save(savedUser);
@@ -121,6 +136,15 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User with id " + userId + "not found"));
 
         userRepository.delete(user);
+    }
+
+    public User getUserByPortfolioId(UUID portfolioId) {
+        return userRepository.findUserByPortfolioId(portfolioId)
+                .orElseThrow(() -> new IllegalStateException("User not found for portfolio: " + portfolioId));
+    }
+
+    public void save(User user) {
+        userRepository.save(user);
     }
 
     public LoginResponse login(LoginRequest request) {
